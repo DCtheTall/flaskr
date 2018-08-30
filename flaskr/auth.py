@@ -29,11 +29,11 @@ def register():
   Register route handler
 
   """
+  error = None
   if request.method == 'POST':
     username = request.form['username']
     password = request.form['password']
     db = get_db()
-    error = None
     if not username:
       error = 'Username is required.'
     if not password:
@@ -44,13 +44,14 @@ def register():
     ).fetchone() is not None:
       error = \
         'User {} is already registered'.format(username)
-    if error is not None:
+    if error is None:
       db.execute(
         'INSERT INTO user (username, password) VALUES (?, ?)',
-        (username, generate_password_hash(password))
+        (username, generate_password_hash(password)),
       )
       db.commit()
       return redirect(url_for('auth.login'))
+  if error is not None:
     flash(error)
   return render_template('auth/register.html')
 
@@ -61,11 +62,11 @@ def login():
   Login user
 
   """
+  error = None
   if request.method == 'POST':
     username = request.form['username']
     password = request.form['password']
     db = get_db()
-    error = None
     user = db.execute(
       'SELECT * FROM user WHERE username = ?',
       (username,),
@@ -78,8 +79,9 @@ def login():
       session.clear()
       session['user_id'] = user['id']
       return redirect(url_for('index'))
+  if error is not None:
     flash(error)
-  render_template('auth/login.html')
+  return render_template('auth/login.html')
 
 
 @bp.before_app_request
