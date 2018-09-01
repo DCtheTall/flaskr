@@ -11,4 +11,4 @@ dist/
 build/
 *.egg-info/
 
-NEXT: http://flask.pocoo.org/docs/1.0/tutorial/templates/
+.vscode
