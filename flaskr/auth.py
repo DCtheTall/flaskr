@@ -29,14 +29,14 @@ def register():
   Register route handler
 
   """
-  error = None
   if request.method == 'POST':
+    error = None
     username = request.form['username']
     password = request.form['password']
     db = get_db()
     if not username:
       error = 'Username is required.'
-    if not password:
+    elif not password:
       error = 'Password is required.'
     elif db.execute(
       'SELECT id FROM user WHERE username = ?',
@@ -51,8 +51,8 @@ def register():
       )
       db.commit()
       return redirect(url_for('auth.login'))
-  if error is not None:
-    flash(error)
+    if error is not None:
+      flash(error)
   return render_template('auth/register.html')
 
 
@@ -62,8 +62,8 @@ def login():
   Login user
 
   """
-  error = None
   if request.method == 'POST':
+    error = None
     username = request.form['username']
     password = request.form['password']
     db = get_db()
@@ -73,14 +73,14 @@ def login():
     ).fetchone()
     if user is None:
       error = 'Incorrect username.'
-    if not check_password_hash(user['password'], password):
+    elif not check_password_hash(user['password'], password):
       error = 'Incorrect password.'
     if error is None:
       session.clear()
       session['user_id'] = user['id']
       return redirect(url_for('index'))
-  if error is not None:
-    flash(error)
+    else:
+      flash(error)
   return render_template('auth/login.html')
 
 
@@ -119,6 +119,6 @@ def login_required(view):
   @functools.wraps(view)
   def wrapped_view(**kwargs):
     if g.user is None:
-      redirect(url_for('auth.login'))
+      return redirect(url_for('auth.login'))
     return view(**kwargs)
   return wrapped_view

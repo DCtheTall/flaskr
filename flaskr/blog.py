@@ -61,7 +61,7 @@ def create():
     error = None
     if not title:
       error = 'Title is required.'
-    if not body:
+    elif not body:
       error = 'Body is required.'
     if error is not None:
       flash(error)
@@ -84,7 +84,7 @@ def get_post(id, check_author=True):
   if post is None:
     abort(
       404, 'Post id {0} does not exist.'.format(id))
-  if check_author and post['author_id'] != g.user['id']:
+  elif check_author and post['author_id'] != g.user['id']:
     abort(403)
   return post
 
@@ -97,9 +97,9 @@ def update(id):
     title = request.form['title']
     body = request.form['body']
     error = None
-    if title is None:
+    if not title:
       error = 'Title is required.'
-    if body is None:
+    elif not body:
       error = 'Body is required.'
     if error is not None:
       flash(error)

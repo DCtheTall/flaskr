@@ -17,9 +17,7 @@
     <label for="body">
       Body
     </label>
-    <textarea name="body" id="body" required>
-      {{ request.form['body'] or post['body'] }}
-    </textarea>
+    <textarea name="body" id="body" required>{{ request.form['body'] or post['body'] }}</textarea>
     <input type="submit" name="Save">
   </form>
   <form action="{{ url_for('blog.delete', id=post['id']) }}" method="post">
